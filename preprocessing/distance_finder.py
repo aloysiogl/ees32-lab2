@@ -1,6 +1,6 @@
 import numpy as np
 import os
-from DistanceFinder import DistanceFinder
+from preprocessing.DistanceFinder import DistanceFinder
 
 directory = os.path.dirname(os.path.abspath(__file__))+"/matrizes"
 
