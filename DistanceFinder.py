@@ -4,7 +4,6 @@ class DistanceFinder:
 
     def __init__(self):
         self.inputs = []
-        self.outputs = []
         self.g = None
         self.k = None
         self.n = None
@@ -13,6 +12,7 @@ class DistanceFinder:
     def set_g(self, g):
         """Sets the G matix"""
         self.k, self.n = g.shape
+        self.inputs = []
         self.g = g
         self.__calculate_distance()
 
