@@ -3,10 +3,10 @@ import numpy as np
 import time
 
 from Channel import Channel
-from DecoderHamming import DecoderHamming
-from EncoderHamming import EncoderHamming
-from Decoder import Decoder
-from Encoder import Encoder
+from matrix_codifiers.DecoderHamming import DecoderHamming
+from matrix_codifiers.EncoderHamming import EncoderHamming
+from matrix_codifiers.Decoder import Decoder
+from matrix_codifiers.Encoder import Encoder
 
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
