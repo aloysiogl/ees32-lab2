@@ -1,6 +1,4 @@
-import numpy as np
 import os
-import re
 from preprocessing.DistanceFinder import DistanceFinder
 from preprocessing.MatrixReader import MatrixReader
 
