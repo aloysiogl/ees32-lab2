@@ -1,6 +1,4 @@
 from random import random as rand
-import numpy
-
 
 class Channel:
 
