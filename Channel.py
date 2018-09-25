@@ -1,5 +1,6 @@
 from random import random as rand
 
+
 class Channel:
 
     def __init__(self, p):
