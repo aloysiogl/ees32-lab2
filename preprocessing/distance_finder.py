@@ -2,32 +2,30 @@ import numpy as np
 import os
 import re
 from preprocessing.DistanceFinder import DistanceFinder
+from preprocessing.MatrixReader import MatrixReader
 
 mask = len("preprocessing")
 directory = os.path.dirname(os.path.abspath(__file__))[:-mask]+"/matrizes"
 
 if __name__ == "__main__":
 
+    reader = MatrixReader()
+    reader.read()
     finder = DistanceFinder()
     choices_map = {}
 
-    for filename in os.listdir(directory):
-        if filename.endswith(".csv"):
-            file = open(directory+"/"+filename)
-            lines = file.readlines()
-            array = np.array(list(map(lambda line: list(map(int, line.strip('\n').split(","))), lines)))
-            finder.set_g(array)
-            key = re.sub(r'.*{', '{', filename)
-            numb = filename.partition(":")[0]
-            if key in choices_map:
-                if finder.get_distance() > choices_map[key][0]:
-                    choices_map[key] = (finder.get_distance(), numb)
-            else:
-                choices_map[key] = (finder.get_distance(), numb)
-            print("Distance : " + str(finder.get_distance()) + " archive: " + filename)
-            print("Matrix:")
-            print(array)
-            file.close()
+    for index in reader.get_matrices_indexes():
+        array = reader.get_matrix(index)
+        finder.set_g(array)
+        key = reader.get_name(index)
+        if key in choices_map:
+            if finder.get_distance() > choices_map[key][0]:
+                choices_map[key] = (finder.get_distance(), index)
+        else:
+            choices_map[key] = (finder.get_distance(), index)
+        print("Distance : " + str(finder.get_distance()))
+        print("Matrix:")
+        print(array)
 
     # Printing the files chosen
     print("Chosen matrices: ")
