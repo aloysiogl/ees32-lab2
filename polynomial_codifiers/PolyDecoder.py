@@ -18,12 +18,25 @@ class PolyDecoder:
 
     def update_sindromes(self):
         # TODO generalize
-        base = np.array([0 for i in range(len(self.g)-1)]+[1])
+        base = np.array([0 for i in range(self.degree(self.g)-1)]+[1])
         self.sindromes.append(base)
 
     def decode(self, message):
-        sindrome = self.pol_div(message, self.g)[1]
-        changer = np.array([0 for i in range(len(self.g)-1)]+[1], dtype=int)
+        g = self.reduce_degree(self.g, self.degree(self.g))
+
+        sindrome = self.reduce_degree(self.pol_div(message, self.g)[1], self.degree(self.g))
+        # print(message)
+        # print(self.g)
+        # print(self.pol_div(message, self.g))
+        print("sindome")
+        print(sindrome)
+        print("g")
+        print(g)
+        print("------")
+        # exit()
+
+        changer = np.array([0 for i in range(len(g)-1)]+[1], dtype=int)
+        message_changer = np.array([0 for i in range(len(message)-1)]+[1], dtype=int)
         rotations = 0
 
         # While sindrome is not all zeros
@@ -32,22 +45,35 @@ class PolyDecoder:
             found = False
             for sind in self.sindromes:
                 if np.array_equal(sindrome, sind):
-                    message = np.mod(message+changer, 2)
+                    message = np.mod(message+message_changer, 2)
                     sindrome = np.mod(sindrome + changer, 2)
                     found = True
+                    break
             if found:
                 continue
 
             # If sindrome not found in set
-            message = self.rotate(message, 1)
-            sindrome = self.rotate(sindrome, 1)
-            rotations -= 1
-            if sindrome[len(sindrome)-1] == 1:
-                sindrome[len(sindrome) - 1] = 0
-                sindrome = np.mod(sindrome+self.g, 2)
-            print(sindrome, rotations)
+            message = self.rotate(message, -1)
+            sindrome = self.rotate(sindrome, -1)
+            rotations += 1
+            if sindrome[0] == 1:
+                sindrome[0] = 0
+                sindrome = np.mod(sindrome+g, 2)
 
-        return self.rotate(self.pol_div(message, self.g)[0], rotations)
+        return self.pol_div(self.rotate(message, rotations), self.g)[0]
+
+    @staticmethod
+    def degree(p):
+        for i in range(len(p)):
+            if p[i] != 0:
+                return len(p) - i
+
+    @staticmethod
+    def reduce_degree(p, d):
+        arr = [0 for i in range(d)]
+        for i in range(d):
+            arr[d-i-1] = p[len(p)-i-1]
+        return np.array(arr)
 
     @staticmethod
     def rotate(arr, rot):
@@ -91,5 +117,21 @@ if __name__ == "__main__":
     decoder = PolyDecoder(gen)
 
     message = encoder.encode(np.array([1, 0, 1]))
-    message = np.mod(message+np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]), 2)
+
+    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
     print(decoder.decode(message))
+
+    # from preprocessing.MatrixReader import MatrixReader
+    #
+    # reader = MatrixReader()
+    # reader.read()
+    # print(np.dot(np.transpose(np.array([
+    #     [1],
+    #     [0],
+    #     [1],
+    #     [0],
+    #     [0],
+    #     [0],
+    #     [0],
+    #     [0],
+    # ])), reader.get_matrix(5)))

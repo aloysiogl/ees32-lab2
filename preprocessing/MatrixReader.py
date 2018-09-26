@@ -19,7 +19,7 @@ class MatrixReader:
                 lines = file.readlines()
                 array = np.array(list(map(lambda line: list(map(int, line.strip('\n').split(","))), lines)))
                 key = re.sub(r'.*{', '{', filename)
-                numb = filename.partition(":")[0]
+                numb = int(filename.partition(":")[0])
                 self.matrices[numb] = array
                 self.names[numb] = key
                 file.close()
