@@ -8,7 +8,7 @@ class PolyEncoder:
     def set_generator(self, g):
         self.g = g
 
-    def set_generator_lsb_first(self):
+    def set_generator_lsb_first(self, g):
         self.g = np.flip(g)
 
     def encode(self, u):
