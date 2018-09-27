@@ -1,5 +1,6 @@
 import numpy as np
 from polynomial_codifiers.PolyEncoder import PolyEncoder
+from preprocessing.matrix_generator import kbits
 
 
 class PolyDecoder:
@@ -17,32 +18,27 @@ class PolyDecoder:
         self.update_sindromes()
 
     def update_sindromes(self, codeword_length):
-        # TODO generalize
         base = self.calc_sindrome(np.array([0 for i in range(codeword_length - 1)]+[1]))
-        print('base', base)
-        self.sindromes.append(base)
+        sind_map = {}
+
+        for i in range(1, codeword_length+1):
+            errors = [[int(y) for y in list(x)] for x in kbits(codeword_length, i)]
+            for err in errors:
+                err_key = tuple(self.calc_sindrome(err))
+                if err_key not in sind_map:
+                    sind_map[err_key] = err_key[len(err_key)-1]
+        for key in sind_map:
+            if sind_map[key] == 1:
+                self.sindromes.append(np.array(key))
 
     def calc_sindrome(self, message):
         sindrome = self.reduce_degree(self.pol_div(message, self.g)[1], self.degree(self.g))
-        print('calculated', sindrome)
         return sindrome
 
     def decode(self, message):
         g = self.reduce_degree(self.g, self.degree(self.g))
 
         sindrome = self.calc_sindrome(message)
-        print('initial sindrome', sindrome)
-        # print(message)
-        # print(self.g)
-        # print(self.pol_div(message, self.g))
-        print("sindome")
-        print(sindrome)
-        print("g")
-        print(g)
-        print("------")
-        # exit()
-
-        changer = np.array([0 for i in range(len(g)-1)]+[1], dtype=int)
         message_changer = np.array([0 for i in range(len(message)-1)]+[1], dtype=int)
         rotations = 0
 
@@ -53,19 +49,16 @@ class PolyDecoder:
             for sind in self.sindromes:
                 if np.array_equal(sindrome, sind):
                     message = np.mod(message+message_changer, 2)
-                    # sindrome = np.mod(sindrome + changer, 2)
-                    print('pre-found', sindrome)
                     sindrome = self.calc_sindrome(message)
-                    print('found', sindrome)
                     found = True
                     break
             if found:
                 continue
-
             # If sindrome not found in set
             message = self.rotate(message, -1)
             sindrome = self.rotate(sindrome, -1)
             rotations += 1
+
             if sindrome[0] == 1:
                 sindrome = np.mod(sindrome+g, 2)
                 sindrome[0] = 0
@@ -133,23 +126,8 @@ if __name__ == "__main__":
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message+np.array([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
     print('decoded', decoded)
-
-    # from preprocessing.MatrixReader import MatrixReader
-    #
-    # reader = MatrixReader()
-    # reader.read()
-    # print(np.dot(np.transpose(np.array([
-    #     [1],
-    #     [0],
-    #     [1],
-    #     [0],
-    #     [0],
-    #     [0],
-    #     [0],
-    #     [0],
-    # ])), reader.get_matrix(5)))
