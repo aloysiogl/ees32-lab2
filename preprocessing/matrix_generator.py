@@ -2,7 +2,7 @@ import numpy as np
 import itertools as it
 import time
 
-from Generator import Generator
+from preprocessing.Generator import Generator
 
 
 def kbits(n, k):
