@@ -17,5 +17,5 @@ def test_division():
     print(PolyDecoder.pol_div(polymult, den))
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     test_division()
