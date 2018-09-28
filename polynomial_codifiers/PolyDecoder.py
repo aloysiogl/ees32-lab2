@@ -23,20 +23,12 @@ class PolyDecoder:
         for i in range(1, 3):
             errors = [[int(y) for y in list(x)] for x in kbits(codeword_length, i)]
             for err in errors:
-                rotations = [tuple(self.rotate(err, i)) for i in range(len(err))]
-                found = False
-                for rotation in rotations:
-                    if rotation in sind_map or tuple(self.calc_sindrome(rotation)) in sind_map.values():
-                        found = True
-                if not found:
-                    for j in range(len(rotations)):
-                        if rotations[j][len(rotations[j])-1] == 1:
-                            sind_map[rotations[j]] = tuple(self.calc_sindrome(rotations[j]))
-
+                err_key = tuple(self.calc_sindrome(err))
+                if err_key not in sind_map or (sind_map[err_key][0] == 0 and sind_map[err_key][1] == i):
+                    sind_map[err_key] = (err[len(err)-1], i)
         for key in sind_map:
-            self.sindromes.append(self.calc_sindrome(key))
-        # print(self.sindromes)
-        # exit()
+            if sind_map[key][0] == 1:
+                self.sindromes.append(np.array(key))
 
     def calc_sindrome(self, message):
         sindrome = self.reduce_degree(self.pol_div(message, self.g)[1], self.degree(self.g))
@@ -130,7 +122,7 @@ if __name__ == "__main__":
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
