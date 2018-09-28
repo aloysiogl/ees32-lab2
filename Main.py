@@ -13,10 +13,10 @@ from polynomial_codifiers.PolyDecoder import PolyDecoder
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
 # N = 240
-N = 10000
-# N = 1000080
+# N = 240
+N = 1000080
 
-chosen_matrices = [2, 5]
+chosen_matrices = [1, 2, 5, 9, 10]
 
 # Reading matrices
 reader = MatrixReader()

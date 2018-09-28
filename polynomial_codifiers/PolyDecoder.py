@@ -20,15 +20,23 @@ class PolyDecoder:
     def update_sindromes(self, codeword_length):
         sind_map = {}
 
-        for i in range(1, codeword_length+1):
+        for i in range(1, 3):
             errors = [[int(y) for y in list(x)] for x in kbits(codeword_length, i)]
             for err in errors:
-                err_key = tuple(self.calc_sindrome(err))
-                if err_key not in sind_map:
-                    sind_map[err_key] = err[len(err)-1]
+                rotations = [tuple(self.rotate(err, i)) for i in range(len(err))]
+                found = False
+                for rotation in rotations:
+                    if rotation in sind_map or tuple(self.calc_sindrome(rotation)) in sind_map.values():
+                        found = True
+                if not found:
+                    for j in range(len(rotations)):
+                        if rotations[j][len(rotations[j])-1] == 1:
+                            sind_map[rotations[j]] = tuple(self.calc_sindrome(rotations[j]))
+
         for key in sind_map:
-            if sind_map[key] == 1:
-                self.sindromes.append(np.array(key))
+            self.sindromes.append(self.calc_sindrome(key))
+        # print(self.sindromes)
+        # exit()
 
     def calc_sindrome(self, message):
         sindrome = self.reduce_degree(self.pol_div(message, self.g)[1], self.degree(self.g))
@@ -42,7 +50,7 @@ class PolyDecoder:
         rotations = 0
 
         # While sindrome is not all zeros
-        while np.count_nonzero(sindrome) != 0 and rotations <= len(sindrome)**2:
+        while np.count_nonzero(sindrome) != 0 and rotations <= len(self.g)**2:
             # Check if sindrome is in set of sindromes
             found = False
             for sind in self.sindromes:
@@ -122,7 +130,7 @@ if __name__ == "__main__":
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message+np.array([0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
