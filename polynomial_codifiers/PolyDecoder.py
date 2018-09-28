@@ -27,7 +27,7 @@ class PolyDecoder:
                 if err_key not in sind_map or (sind_map[err_key][0] == 0 and sind_map[err_key][1] == i):
                     sind_map[err_key] = (err[len(err)-1], i)
         for key in sind_map:
-            if sind_map[key] == 1:
+            if sind_map[key][0] == 1:
                 self.sindromes.append(np.array(key))
 
     def calc_sindrome(self, message):
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message+np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
