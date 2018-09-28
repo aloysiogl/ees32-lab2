@@ -30,4 +30,4 @@ if __name__ == "__main__":
     choices = sorted(choices_map.values(), key=lambda choice: int(choice[1]))
 
     for choice in choices:
-        print("File: " + choice[1] + " distance: " + str(choice[0]))
+        print("File: " + str(choice[1]) + " distance: " + str(choice[0]))

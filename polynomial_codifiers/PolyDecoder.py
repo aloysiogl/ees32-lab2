@@ -18,7 +18,6 @@ class PolyDecoder:
         self.update_sindromes()
 
     def update_sindromes(self, codeword_length):
-        base = self.calc_sindrome(np.array([0 for i in range(codeword_length - 1)]+[1]))
         sind_map = {}
 
         for i in range(1, codeword_length+1):
@@ -26,7 +25,7 @@ class PolyDecoder:
             for err in errors:
                 err_key = tuple(self.calc_sindrome(err))
                 if err_key not in sind_map:
-                    sind_map[err_key] = err_key[len(err_key)-1]
+                    sind_map[err_key] = err[len(err)-1]
         for key in sind_map:
             if sind_map[key] == 1:
                 self.sindromes.append(np.array(key))
@@ -58,12 +57,11 @@ class PolyDecoder:
             message = self.rotate(message, -1)
             sindrome = self.rotate(sindrome, -1)
             rotations += 1
-
             if sindrome[0] == 1:
                 sindrome = np.mod(sindrome+g, 2)
                 sindrome[0] = 0
 
-        return self.pol_div(self.rotate(message, rotations), self.g)[0]
+        return self.reduce_degree(self.pol_div(self.rotate(message, rotations), self.g)[0], len(self.g)-self.degree(g)+1)
 
     @staticmethod
     def degree(p):
@@ -126,7 +124,7 @@ if __name__ == "__main__":
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message+np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
