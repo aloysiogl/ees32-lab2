@@ -6,19 +6,17 @@ import time
 from Channel import Channel
 from matrix_codifiers.DecoderHamming import DecoderHamming
 from matrix_codifiers.EncoderHamming import EncoderHamming
-from matrix_codifiers.Decoder import Decoder
-from matrix_codifiers.Encoder import Encoder
 from preprocessing.MatrixReader import MatrixReader
 from polynomial_codifiers.PolyEncoder import PolyEncoder
 from polynomial_codifiers.PolyDecoder import PolyDecoder
 
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
-N = 240
-# N = 1000
+# N = 240
+N = 10000
 # N = 1000080
 
-chosen_matrices = [5, 9]
+chosen_matrices = [2, 5]
 
 # Reading matrices
 reader = MatrixReader()

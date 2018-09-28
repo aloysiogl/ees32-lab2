@@ -42,7 +42,7 @@ class PolyDecoder:
         rotations = 0
 
         # While sindrome is not all zeros
-        while np.count_nonzero(sindrome) != 0:
+        while np.count_nonzero(sindrome) != 0 and rotations <= len(sindrome)**2:
             # Check if sindrome is in set of sindromes
             found = False
             for sind in self.sindromes:
@@ -116,15 +116,13 @@ class PolyDecoder:
 
 
 if __name__ == "__main__":
-    # n=14
-    # g=1+x^2+x^6 (divisor de X^14 + 1 : OK)
-    gen = np.array([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1])
+    gen = np.array([0,0,0,0,0,0,0,0,1,0,1,1,1,0,1])
     encoder = PolyEncoder(gen)
-    decoder = PolyDecoder(gen, codeword_length=14)
+    decoder = PolyDecoder(gen, codeword_length=15)
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]), 2)
+    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
