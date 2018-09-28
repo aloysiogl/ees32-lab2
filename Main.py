@@ -15,10 +15,10 @@ from polynomial_codifiers.PolyDecoder import PolyDecoder
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
 N = 240
-# N = 100000
+# N = 1000
 # N = 1000080
 
-chosen_matrices = [5]
+chosen_matrices = [5, 9]
 
 # Reading matrices
 reader = MatrixReader()
@@ -75,13 +75,12 @@ def cyclic_process(index, codes, channels):
 
     # Decoding
     poly_decoder = PolyDecoder(gen, len(gen))
-    print(poly_decoder.decode(outputs[0][0]))
-    # exit()
+
     for c in range(len(channels)):
+        print("processing...")
         outputs[c] = np.array([poly_decoder.decode(code) for code in outputs[c]])
         outputs[c] = outputs[c].flatten()
-        print(c/len(channels))
-
+    print("over")
     return outputs
 
 
@@ -92,30 +91,25 @@ if __name__ == "__main__":
     codes = np.rint(np.random.random_sample(N)).astype(bool)
 
     # Generating channels with different noises to plot a graph
-    # ps = [0.001, 0.2, 0.1, 5e-2, 2e-2, 1e-2, 5e-3, 2e-3, 1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 2e-5, 1e-5, 5e-6, 2e-6]
-    ps = [0.05]
+    ps = [0.5, 0.2, 0.1, 5e-2, 2e-2, 1e-2, 5e-3, 2e-3, 1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 2e-5, 1e-5, 5e-6, 2e-6]
     channels = [Channel(p) for p in ps]
 
     # Generating outputs without encoding, with hamming encoding and with our encoding
     normal_outputs = normal_process(codes, channels)
     hamming_outputs = hamming_process(codes, channels)
     cyclic_outputs = [cyclic_process(i, codes, channels) for i in chosen_matrices]
-
-    # improved_outputs6 = cyclic_process(P6, codes, channels)
-    # improved_outputs9 = cyclic_process(P9, codes, channels)
-    # improved_outputs12 = cyclic_process(P12, codes, channels)
-    # improved_outputs15 = cyclic_process(P15, codes, channels)
+    # print(cyclic_outputs[0][0]-hamming_outputs[0])
+    # exit()
 
     # Comparing outputs and plotting a graph
     normal_ps = []
     hamming_ps = []
-    improved_ps6 = []
-    improved_ps9 = []
-    improved_ps12 = []
-    improved_ps15 = []
+    cyclic_ps = [[] for p in range(len(cyclic_outputs))]
     for c in range(len(channels)):
         normal_ps.append(1 - np.count_nonzero(normal_outputs[c] == codes)/N)
         hamming_ps.append(1 - np.count_nonzero(hamming_outputs[c] == codes)/N)
+        for i in range(len(cyclic_outputs)):
+            cyclic_ps[i].append((1 - np.count_nonzero(cyclic_outputs[i][c] == codes)/N))
         # improved_ps6.append(
         #     1 - np.count_nonzero(np.reshape(improved_outputs6[c], (1, N)) == np.reshape(codes, (1, N))) / N)
         # improved_ps9.append(
@@ -126,10 +120,8 @@ if __name__ == "__main__":
         #     1 - np.count_nonzero(np.reshape(improved_outputs15[c], (1, N)) == np.reshape(codes, (1, N))) / N)
     normal_ps = np.log(normal_ps) / np.log(10)
     hamming_ps = np.log(hamming_ps) / np.log(10)
-    # improved_ps6 = np.log(improved_ps6) / np.log(10)
-    # improved_ps9 = np.log(improved_ps9) / np.log(10)
-    # improved_ps12 = np.log(improved_ps12) / np.log(10)
-    # improved_ps15 = np.log(improved_ps15) / np.log(10)
+    for i in range(len(cyclic_ps)):
+        cyclic_ps[i] = np.log(cyclic_ps[i]) / np.log(10)
     ps = np.log(ps) / np.log(10)
 
     print("Time taken:", time.time() - t, "s")
@@ -139,9 +131,8 @@ if __name__ == "__main__":
     plt.ylabel("log(Probabilidade de erro de bit)")
     plt1 = plt.plot(ps, normal_ps, label="Não codificado")
     plt2 = plt.plot(ps, hamming_ps, label="Hamming")
-    # plt3 = plt.plot(ps, improved_ps6, label="Código 14x6")
-    # plt4 = plt.plot(ps, improved_ps9, label="Código 21x9")
-    # plt5 = plt.plot(ps, improved_ps12, label="Código 28x12")
-    # plt6 = plt.plot(ps, improved_ps15, label="Código 35x15")
+    plt_cycl = []
+    for i in range(len(cyclic_ps)):
+        plt_cycl.append(plt.plot(ps, cyclic_ps[i], label=reader.get_name(chosen_matrices[i])))
     ax.legend()
     plt.show()

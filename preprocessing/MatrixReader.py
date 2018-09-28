@@ -21,7 +21,7 @@ class MatrixReader:
                 key = re.sub(r'.*{', '{', filename)
                 numb = int(filename.partition(":")[0])
                 self.matrices[numb] = array
-                self.names[numb] = key
+                self.names[numb] = "Cíclico " + key[:-4]
                 file.close()
 
     def get_matrix(self, index):
