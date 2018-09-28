@@ -20,7 +20,7 @@ class PolyDecoder:
     def update_sindromes(self, codeword_length):
         sind_map = {}
 
-        for i in range(1, 3):
+        for i in range(1, codeword_length+1):
             errors = [[int(y) for y in list(x)] for x in kbits(codeword_length, i)]
             for err in errors:
                 err_key = tuple(self.calc_sindrome(err))
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
     message = encoder.encode(np.array([1, 0, 1]))
 
-    message = np.mod(message+np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message+np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
