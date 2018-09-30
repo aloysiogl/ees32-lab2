@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+import six,sys
+# needed for utf-encoding on python 2:
+if six.PY2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+
 
 from Channel import Channel
 from matrix_codifiers.DecoderHamming import DecoderHamming
@@ -13,8 +19,8 @@ from polynomial_codifiers.PolyDecoder import PolyDecoder
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
 # N = 240
-N = 10000
-# N = 1000080
+# N = 10000
+N = 1000080
 
 chosen_matrices = [1, 2, 5, 9, 10]
 
