@@ -4,6 +4,9 @@
 =#
 
 using BenchmarkTools
+using PyCall
+@pyimport matplotlib.pyplot as plt
+
 include("./decode.jl")
 
 
@@ -27,3 +30,11 @@ for m=ms
 	# nanossegundos
 	tempos[m-ms[1]+1] = calctempo(bench)
 end
+
+fig, ax = plt.subplots()
+plt.xlim([2^4,2^20])
+plt.xlabel.("tamanho de bloco")
+plt.ylabel("tempo de decodificação (ns)")
+plt.plot(map(i->2^i, ms), tempos)
+ax[:legend]()
+plt.show()
