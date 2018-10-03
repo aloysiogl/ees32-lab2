@@ -4,4 +4,79 @@ A algoritmo desenvolvido pode ser dividido nas seguintes etapas: obtenção dos 
 \subsection{Obtenção dos polinômios geradores}
 Foram escolhidos, inicialmente, cinco tipos de códigos deferentes com duplas $(k, n)$ mostradas a seguir contidas em $S = \{(6, 10), (7, 12), (8, 14), (9, 15), (9, 16)\}$. Para cada elemento de $S$ foram gerados todos os polinômios geradores $g_{ij}$ em que $i$ é o índice em $S$ e $j$ o índice de um polinômio qualquer quer gere um código $S_i$. Com este fim, foi utilizada a função \textit{cyclpoly} do MATLAB.
 
-Para cada $i$ o conjunto $g_{ij}$ guarda os polinômios
+Para cada $i$ dentre todos os $j$ escolhe-se o polinômio $g_{ij}$ que gera o código de maior distância mínima. Para isso, geraram-se todas as palavras informação e calculou-se o peso de cada palavra código a fim de achar a distância mínima. A complexidade desta etapa é $\mathcal{O}(2^kn^{3.37})$. Considerou-se o pior caso da multiplicação de matriz $\mathcal{O}(n^{2.37})$, uma vez que para o cálculo da palavra código pela palavra informação utilizou-se a multiplicação matricial. O algoritmo descrito foi implementado na linguagem \textit{Python}.
+
+A principal dificuldade desta parte do código foi achar a distância mínima, no entanto, muito se pôde aproveitar da atividade anterior. Dessa forma a dificuldade desta etapa não foi tão grande.
+
+\subsection{Codificação}
+
+A codificação consistiu simplesmente de uma multiplicação de polinômios, a qual foi feita em \textit{Python} utilizando a função \textit{polymul} da biblioteca \textit{numpy}. Dessa forma a complexidade de codificação do sistema ficou $\mathcal{O}(n^2)$ para uma palavra código de tamanho $n$.
+
+Vale ressaltar que o canal utilizado foi exatamente o mesmo do experimento anterior, por isso, sua implementação nõa será detalhada neste documento.
+
+\subsection{Decodificação}
+
+Esta foi a parte mais desafiadora do experimento, uma vez que esta parte contém a envolve a correção de erros. A decodificação consiste em um divisão polinomial da palavra código pelo polinômio gerador, no entanto se houver resto (síndrome), deve haver correção de erros.
+
+Vale ressaltar que o código foi implementado em \textit{Python} e que a divisão de polinômios foi implementada seguindo o algoritmo de divisão manual com soma resto 2. A complexidade final do algoritmo de divisão polinomial ficou $\mathcal{O}(n^2)$.
+
+Para corrigir os erros foi implementado um algoritmo realiza rotações para ser capaz de utilizar síndromes associadas apenas a erros na primeira posição. O pseudocódigo para tal algoritmo é mostrado em Algoritimo \ref{alg:decode}.
+
+\begin{algorithm}
+	\caption{Decodificação}\label{alg:decode}
+	\begin{algorithmic}[Message]
+		\Procedure{$decode$}{$message$}
+			\State $sind \gets calc\_sindrome(message)$
+			
+			\While {$sind \neq all\_zeros$}
+				\If {$sind \in end\_one\_sinds$}
+					\State $change\_first(message)$
+					\State $sind \gets calc\_sindrome(message)$
+				\Else
+				\State $rotate(message, -1)$
+				\State $rotate(sind, -1)$
+					\If{$sind.first = 1$} 
+						\State $sind.first \gets 0$
+						\State $sind \gets sind+g$
+					\EndIf
+				\EndIf
+			\EndWhile
+		\State $message \gets unrotate(message)$\\
+		\Return $divide(message, g)$
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+A parte mais desafiadora da atividade foi encontrar o conjunto de síndromes, representado no algoritmo por $end\_one\_sinds$. Consta em Algoritmo \ref{alg:update_sindromes} o código utilizado para encontrar um conjunto de síndromes associadas a erros que começam em 1 de maneira a garantir que o código de Algoritimo \ref{alg:decode} termine em ao menos $n$ ciclos do laço mais externo.
+
+\begin{algorithm}
+	\caption{Decodificação}\label{alg:update_sindromes}
+	\begin{algorithmic}[Message]
+		\Procedure{$update\_sindromes$}{$ $}
+		\State $sind\_map \gets \emptyset$
+		\For {$i \in \{1, len(codeword)\}$}
+			\State $erros \gets list(errors, weigth=i)$
+			
+		\EndFor
+		
+		\State $sind \gets calc\_sindrome(message)$
+		
+		\While {$sind \neq all\_zeros$}
+		\If {$sind \in end\_one\_sinds$}
+		\State $change\_first(message)$
+		\State $sind \gets calc\_sindrome(message)$
+		\Else
+		\State $rotate(message, -1)$
+		\State $rotate(sind, -1)$
+		\If{$sind.first = 1$} 
+		\State $sind.first \gets 0$
+		\State $sind \gets sind+g$
+		\EndIf
+		\EndIf
+		\EndWhile
+		\State $message \gets unrotate(message)$\\
+		\Return $divide(message, g)$
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+ 
