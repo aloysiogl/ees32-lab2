@@ -13,3 +13,6 @@ report/sections/*.log
 report/report\.bbl
 
 report/report\.blg
+
+report/*.fls
+report/*.fdb_latexmk

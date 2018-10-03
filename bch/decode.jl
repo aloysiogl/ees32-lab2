@@ -79,6 +79,7 @@ function decode(poly::fq_nmod_poly, bch::BCHCode)
 	    end
 	end
 
+	# Search for roots of the error location polynomial
 	decoded = poly
 	σ2t = σ[2*t+1]
 	maxrootcount = degree(σ2t)
