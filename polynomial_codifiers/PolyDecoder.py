@@ -20,12 +20,12 @@ class PolyDecoder:
     def update_sindromes(self, codeword_length):
         sind_map = {}
 
-        for i in range(1, codeword_length+1):
+        for i in range(1, codeword_length + 1):
             errors = [[int(y) for y in list(x)] for x in kbits(codeword_length, i)]
             for err in errors:
                 err_key = tuple(self.calc_sindrome(err))
                 if err_key not in sind_map or (sind_map[err_key][0] == 0 and sind_map[err_key][1] == i):
-                    sind_map[err_key] = (err[len(err)-1], i)
+                    sind_map[err_key] = (err[len(err) - 1], i)
         for key in sind_map:
             if sind_map[key][0] == 1:
                 self.sindromes.append(np.array(key))
@@ -38,16 +38,16 @@ class PolyDecoder:
         g = self.reduce_degree(self.g, self.degree(self.g))
 
         sindrome = self.calc_sindrome(message)
-        message_changer = np.array([0 for i in range(len(message)-1)]+[1], dtype=int)
+        message_changer = np.array([0 for i in range(len(message) - 1)] + [1], dtype=int)
         rotations = 0
 
         # While sindrome is not all zeros
-        while np.count_nonzero(sindrome) != 0 and rotations <= len(self.g)**2:
+        while np.count_nonzero(sindrome) != 0 and rotations <= len(self.g) ** 2:
             # Check if sindrome is in set of sindromes
             found = False
             for sind in self.sindromes:
                 if np.array_equal(sindrome, sind):
-                    message = np.mod(message+message_changer, 2)
+                    message = np.mod(message + message_changer, 2)
                     sindrome = self.calc_sindrome(message)
                     found = True
                     break
@@ -58,10 +58,11 @@ class PolyDecoder:
             sindrome = self.rotate(sindrome, -1)
             rotations += 1
             if sindrome[0] == 1:
-                sindrome = np.mod(sindrome+g, 2)
+                sindrome = np.mod(sindrome + g, 2)
                 sindrome[0] = 0
 
-        return self.reduce_degree(self.pol_div(self.rotate(message, rotations), self.g)[0], len(self.g)-self.degree(g)+1)
+        return self.reduce_degree(self.pol_div(self.rotate(message, rotations), self.g)[0],
+                                  len(self.g) - self.degree(g) + 1)
 
     @staticmethod
     def degree(p):
@@ -73,12 +74,12 @@ class PolyDecoder:
     def reduce_degree(p, d):
         arr = [0 for i in range(d)]
         for i in range(d):
-            arr[d-i-1] = p[len(p)-i-1]
+            arr[d - i - 1] = p[len(p) - i - 1]
         return np.array(arr)
 
     @staticmethod
     def rotate(arr, rot):
-        new_arr = [arr[(i-rot) % len(arr)] for i in range(len(arr))]
+        new_arr = [arr[(i - rot) % len(arr)] for i in range(len(arr))]
         return np.array(new_arr)
 
     @staticmethod
@@ -86,14 +87,14 @@ class PolyDecoder:
         def leading(p):
             for i in range(len(p)):
                 if p[i] != 0:
-                    return len(p)-i-1
+                    return len(p) - i - 1
 
         def shift(p, ind):
             aws = np.array([0 for i in range(len(p))], dtype=int)
 
             for i in range(len(p)):
-                if (i-ind) >= 0:
-                    aws[i-ind] = p[i]
+                if (i - ind) >= 0:
+                    aws[i - ind] = p[i]
             return aws
 
         len_dif = len(n) - len(d)
@@ -107,22 +108,23 @@ class PolyDecoder:
 
         while np.count_nonzero(r) != 0 and leading(r) >= leading(d):
             t = shift(d, leading(r) - leading(d))
-            q[len(q)-(leading(r) - leading(d))-1] = 1
+            q[len(q) - (leading(r) - leading(d)) - 1] = 1
             r = np.mod(r - t, 2)
-        
+
         partial = np.polymul(d, q)
-        assert np.array_equal(n, np.mod(np.concatenate([np.array([0 for i in range(len(n) - len(partial))]), partial], 0)+r, 2))
+        assert np.array_equal(n, np.mod(
+            np.concatenate([np.array([0 for i in range(len(n) - len(partial))]), partial], 0) + r, 2))
         return q, r
 
 
 if __name__ == "__main__":
-    gen = np.array([0,0,0,0,0,0,0,0,1,0,1,1,1,0,1])
+    gen = np.array([0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1])
     encoder = PolyEncoder(gen)
-    decoder = PolyDecoder(gen, codeword_length=15)
+    decoder = PolyDecoder(gen, codeword_length=12)
 
-    message = encoder.encode(np.array([1, 0, 1]))
+    message = encoder.encode(np.array([0, 0, 1]))
 
-    message = np.mod(message+np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]), 2)
+    message = np.mod(message + np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)

@@ -12,9 +12,7 @@ from polynomial_codifiers.PolyDecoder import PolyDecoder
 
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
-# N = 240
-N = 10000
-# N = 1000080
+N = 1000944
 
 chosen_matrices = [1, 2, 5, 9, 10]
 
@@ -96,8 +94,6 @@ if __name__ == "__main__":
     normal_outputs = normal_process(codes, channels)
     hamming_outputs = hamming_process(codes, channels)
     cyclic_outputs = [cyclic_process(i, codes, channels) for i in chosen_matrices]
-    # print(cyclic_outputs[0][0]-hamming_outputs[0])
-    # exit()
 
     # Comparing outputs and plotting a graph
     normal_ps = []
@@ -108,14 +104,6 @@ if __name__ == "__main__":
         hamming_ps.append(1 - np.count_nonzero(hamming_outputs[c] == codes)/N)
         for i in range(len(cyclic_outputs)):
             cyclic_ps[i].append((1 - np.count_nonzero(cyclic_outputs[i][c] == codes)/N))
-        # improved_ps6.append(
-        #     1 - np.count_nonzero(np.reshape(improved_outputs6[c], (1, N)) == np.reshape(codes, (1, N))) / N)
-        # improved_ps9.append(
-        #     1 - np.count_nonzero(np.reshape(improved_outputs9[c], (1, N)) == np.reshape(codes, (1, N))) / N)
-        # improved_ps12.append(
-        #     1 - np.count_nonzero(np.reshape(improved_outputs12[c], (1, N)) == np.reshape(codes, (1, N))) / N)
-        # improved_ps15.append(
-        #     1 - np.count_nonzero(np.reshape(improved_outputs15[c], (1, N)) == np.reshape(codes, (1, N))) / N)
     normal_ps = np.log(normal_ps) / np.log(10)
     hamming_ps = np.log(hamming_ps) / np.log(10)
     for i in range(len(cyclic_ps)):
