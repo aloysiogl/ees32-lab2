@@ -52,31 +52,28 @@ A parte mais desafiadora da atividade foi encontrar o conjunto de síndromes, re
 \begin{algorithm}
 	\caption{Decodificação}\label{alg:update_sindromes}
 	\begin{algorithmic}[Message]
-		\Procedure{$update\_sindromes$}{$ $}
+		\Procedure{$update\_sindrom	es$}{$ $}
 		\State $sind\_map \gets \emptyset$
 		\For {$i \in \{1, len(codeword)\}$}
-			\State $erros \gets list(errors, weigth=i)$
-			
+			\State $errs \gets list(errors, weigth=i)$
+			\For {$err \in errs$}
+				\State $err_key \gets calc\_sindrome(err)$
+				\If {$err\_key=all\_zeros$}
+					\State $continue$
+				\EndIf
+				
+				\If {$err\_key \notin sind\_map $ $\cup$\\ $weigth(sind\_map[err\_key]) = i$ $\cap$ \\ $error\_ends\_with\_zero(sind\_map[err\_key])$}
+				\State $sind\_map[err\_key] \gets (err.first, i)$
+				\EndIf
+			\EndFor
 		\EndFor
-		
-		\State $sind \gets calc\_sindrome(message)$
-		
-		\While {$sind \neq all\_zeros$}
-		\If {$sind \in end\_one\_sinds$}
-		\State $change\_first(message)$
-		\State $sind \gets calc\_sindrome(message)$
-		\Else
-		\State $rotate(message, -1)$
-		\State $rotate(sind, -1)$
-		\If{$sind.first = 1$} 
-		\State $sind.first \gets 0$
-		\State $sind \gets sind+g$
-		\EndIf
-		\EndIf
-		\EndWhile
-		\State $message \gets unrotate(message)$\\
-		\Return $divide(message, g)$
+		\For {$key \in sind\_map$}
+			\If{$error\_ends\_with\_one(sind\_map[err\_key])$}
+				\State $end\_one\_sinds.add(key)$
+			\EndIf
+		\EndFor
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
- 
+
+A complexidade de decodificação do sistema é  $\mathcal{O}(n^2h)$. Em que $h$ é o tamanho do conjunto de síndromes. 
