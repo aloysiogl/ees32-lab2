@@ -9,3 +9,7 @@ report/*.pdf
 report/*.gz
 report/*.backup
 report/sections/*.log
+
+report/report\.bbl
+
+report/report\.blg
