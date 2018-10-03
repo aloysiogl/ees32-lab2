@@ -24,6 +24,8 @@ class PolyDecoder:
             errors = [[int(y) for y in list(x)] for x in kbits(codeword_length, i)]
             for err in errors:
                 err_key = tuple(self.calc_sindrome(err))
+                if np.count_nonzero(err_key) == 0:
+                    continue
                 if err_key not in sind_map or (sind_map[err_key][0] == 0 and sind_map[err_key][1] == i):
                     sind_map[err_key] = (err[len(err) - 1], i)
         for key in sind_map:
