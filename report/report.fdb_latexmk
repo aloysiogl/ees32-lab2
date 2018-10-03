@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1538349560 "report.tex" "/media/vitor/000F8EFA0002DB72/ITA/ELE32/lab2/report/report.pdf" "report" 1538349561
+["pdflatex"] 1538349560 "report.tex" "/media/vitor/000F8EFA0002DB72/ITA/ELE32/lab2/report/report.pdf" "report" 1538521528
   "/etc/texmf/web2c/texmf.cnf" 1534087842 1101 af7716885e081ab43982cab7b4672c1a ""
   "/media/vitor/000F8EFA0002DB72/ITA/ELE32/lab2/report/report.aux" 1538349561 939 b70bd7c2a68a036e14460ee9b4776c75 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1480098666 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -93,8 +93,8 @@
   "sections/preamble.tex" 1538349165 10439 fed240ceeb59087de22de096b0d1f78c ""
   "sections/resultados.tex" 1538349300 772 c7e3b67f12e1e1fa4c0740032978f72e ""
   (generated)
-  "report.log"
-  "report.aux"
   "report.pdf"
-  "/media/vitor/000F8EFA0002DB72/ITA/ELE32/lab2/report/report.log"
+  "report.log"
   "/media/vitor/000F8EFA0002DB72/ITA/ELE32/lab2/report/report.pdf"
+  "report.aux"
+  "/media/vitor/000F8EFA0002DB72/ITA/ELE32/lab2/report/report.log"
