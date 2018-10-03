@@ -120,15 +120,15 @@ class PolyDecoder:
 
 
 if __name__ == "__main__":
-    gen = np.array([0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1])
+    gen = np.array([0, 0, 0, 0, 1, 1, 1, 1])
     encoder = PolyEncoder(gen)
-    decoder = PolyDecoder(gen, codeword_length=12)
+    decoder = PolyDecoder(gen, codeword_length=8)
 
     message = encoder.encode(np.array([0, 0, 1]))
 
-    message = np.mod(message + np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 2)
+    message = np.mod(message + np.array([0, 0, 0, 0, 0, 0, 0, 0]), 2)
+    print(decoder.sindromes)
     print('codeword', message)
     print('begin decoding')
     decoded = decoder.decode(message)
     print('decoded', decoded)
-    

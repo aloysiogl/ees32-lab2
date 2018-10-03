@@ -12,6 +12,27 @@ Os polinômios geradores utilizados e suas respectivas distâncias mínimas de c
 	\label{lst:polinomios}
 \end{align}
 
+\subsection{Eficiência dos códigos cíclicos}
+
+Um gráfico comparativo entre os códigos aqui desenvolvidos e o código de Hamming é mostrado na Figura \ref{fig:cyclic_comparison}
+
+\begin{figure}[!hb]
+	\centering
+	\captionsetup{justification=centering}
+	\includegraphics[scale=0.6]{floats/cyclic_5x10e6.png}
+	\caption{\label{fig:cyclic_comparison}Comparação da eficácia dos códigos cíclicos para 5004720 bits enviados.}
+\end{figure}
+
+A título de comparação, a Figura \ref{fig:non_cyclic_comparison} traz os resultados do experimento anterior em códigos não necessariamente cíclicos gerados buscando-se aumentar a distância mínima com o aumento do tamanho do bloco.
+
+\begin{figure}[!hb]
+	\centering
+	\captionsetup{justification=centering}
+	\includegraphics[scale=0.45]{floats/non_cyclic.png}
+	\caption{\label{fig:non_cyclic_comparison}Comparação da eficácia dos códigos não necessariamente cíclicos para 1000080 bits enviados.}
+\end{figure}
+
+
 \subsection{\label{complexidade_decod}Complexidade de decodificação BCH}
 
 Segundo \cite{ref:algoritmo-berlekamp}, a decodificação de códigos BCH se dá em $O(n)$, $n$ sendo o tamanho de bloco empregado. Para confirmar a validade dessa afirmação, construíram-se códigos $BCH(m, 3)$, com $m \in \lbrace 4,5,...,20 \rbrace$, e mediram-se os tempos de decodificação submetendo a mesma palavra a cada um deles, com resultados ilustrados pela Figura \ref{fig:bch_decoding_is_linear}.
