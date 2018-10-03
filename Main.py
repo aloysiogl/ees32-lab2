@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+import six,sys
+# needed for utf-encoding on python 2:
+if six.PY2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+
 
 from Channel import Channel
 from matrix_codifiers.DecoderHamming import DecoderHamming

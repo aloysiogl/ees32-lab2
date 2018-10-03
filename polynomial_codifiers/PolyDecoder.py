@@ -42,7 +42,7 @@ class PolyDecoder:
         rotations = 0
 
         # While sindrome is not all zeros
-        while np.count_nonzero(sindrome) != 0 and rotations <= len(self.g) ** 2:
+        while np.count_nonzero(sindrome) != 0 :
             # Check if sindrome is in set of sindromes
             found = False
             for sind in self.sindromes:
