@@ -43,3 +43,16 @@ Segundo \cite{ref:algoritmo-berlekamp}, a decodificação de códigos BCH se dá
 	\includegraphics[scale=0.3]{floats/bch-decode-is-linear.eps}
 	\caption{\label{fig:bch_decoding_is_linear}Tempo de decodificação para BCH com variados tamanhos de bloco.}
 \end{figure}
+
+\subsection{\label{desempenho_bch}Desempenho do BCH}
+
+Para comparar o código BCH aos outros cíclicos, procurou-se um BCH de taxa próxima a 4/7 (usada como referência nos outros códigos deste laboratório), elegendo-se $BCH(5, 3)$ para ser submetido a testes sob canal BSC. A escolha se deu com base no polinômio gerador calculado, $g(X)=X^{15}+X^{11}+X^{10}+X^9+X^8+X^7+X^5+X^3+X^2+X+1$, que rendeu ao código taxa $\frac{31-15}{31}\simeq 0.52\simeq \frac{4}{7}\simeq 0.57$.
+
+Somente pela superior distância mínima projetada (3), era de se esperar que $BCH(5,3)$ superasse todos os outros códigos descritos neste texto. Isso é corroborado pela Figura \ref{fig:bch_performance}, na qual se vê que ele supera $Hamming(4,7)$ (que, por sua vez, tinha o mesmo desempenho aproximado dos outros códigos cíclicos).
+
+\begin{figure}[!hb]
+	\centering
+    \captionsetup{justification=centering}
+	\includegraphics[scale=0.6]{floats/bch-performance.eps}
+	\caption{\label{fig:bch_performance}Chances de erro de bit de informação para $BCH(5,3)$ e $Hamming(4,7)$ sujeitos a canais BSC de variadas taxas de erro de bit.}
+\end{figure}
