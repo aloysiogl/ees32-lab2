@@ -1,5 +1,6 @@
 import numpy as np
 from polynomial_codifiers.PolyEncoder import PolyEncoder
+from polynomial_codifiers.PolyOps import poly_divmod
 from preprocessing.matrix_generator import kbits
 
 
@@ -50,6 +51,7 @@ class PolyDecoder:
             for sind in self.sindromes:
                 if np.array_equal(sindrome, sind):
                     message = np.mod(message + message_changer, 2)
+
                     sindrome = self.calc_sindrome(message)
                     found = True
                     break
@@ -71,6 +73,7 @@ class PolyDecoder:
         for i in range(len(p)):
             if p[i] != 0:
                 return len(p) - i
+        return 0
 
     @staticmethod
     def reduce_degree(p, d):
@@ -86,37 +89,47 @@ class PolyDecoder:
 
     @staticmethod
     def pol_div(n, d):
-        def leading(p):
-            for i in range(len(p)):
-                if p[i] != 0:
-                    return len(p) - i - 1
+        # def leading(p):
+        #     for i in range(len(p)):
+        #         if p[i] != 0:
+        #             return len(p) - i - 1
+        #
+        # def shift(p, ind):
+        #     aws = np.array([0 for i in range(len(p))], dtype=int)
+        #
+        #     for i in range(len(p)):
+        #         if (i - ind) >= 0:
+        #             aws[i - ind] = p[i]
+        #     return aws
+        #
+        # len_dif = len(n) - len(d)
+        #
+        # assert len_dif >= 0
+        #
+        # d = np.concatenate([np.array([0 for i in range(len_dif)], dtype=int), d], 0)
+        #
+        # q = np.array([0 for i in range(len(n))], dtype=int)
+        # r = np.array(n)
+        #
+        # while np.count_nonzero(r) != 0 and leading(r) >= leading(d):
+        #     t = shift(d, leading(r) - leading(d))
+        #     q[len(q) - (leading(r) - leading(d)) - 1] = 1
+        #     r = np.mod(r - t, 2)
 
-        def shift(p, ind):
-            aws = np.array([0 for i in range(len(p))], dtype=int)
+        if np.count_nonzero(n) == 0:
+            q1 = np.array([0 for i in range(len(n))], dtype=int)
+            r1 = np.array([0 for i in range(len(n))], dtype=int)
+        else:
+            q1, r1 = poly_divmod(list(PolyDecoder.reduce_degree(n, PolyDecoder.degree(n))),
+                                 list(PolyDecoder.reduce_degree(d, PolyDecoder.degree(d))))
+            len_dif = len(n) - len(q1)
+            q1 = np.mod(np.concatenate([np.array([0 for i in range(len_dif)], dtype=int), q1], 0), 2)
+            len_dif = len(n) - len(r1)
+            r1 = np.mod(np.concatenate([np.array([0 for i in range(len_dif)], dtype=int), r1], 0), 2)
+        # assert np.array_equal(q,q1)
+        # assert np.array_equal(r,r1)
 
-            for i in range(len(p)):
-                if (i - ind) >= 0:
-                    aws[i - ind] = p[i]
-            return aws
-
-        len_dif = len(n) - len(d)
-
-        assert len_dif >= 0
-
-        d = np.concatenate([np.array([0 for i in range(len_dif)], dtype=int), d], 0)
-
-        q = np.array([0 for i in range(len(n))], dtype=int)
-        r = np.array(n)
-
-        while np.count_nonzero(r) != 0 and leading(r) >= leading(d):
-            t = shift(d, leading(r) - leading(d))
-            q[len(q) - (leading(r) - leading(d)) - 1] = 1
-            r = np.mod(r - t, 2)
-
-        partial = np.polymul(d, q)
-        assert np.array_equal(n, np.mod(
-            np.concatenate([np.array([0 for i in range(len(n) - len(partial))]), partial], 0) + r, 2))
-        return q, r
+        return q1, r1
 
 
 if __name__ == "__main__":

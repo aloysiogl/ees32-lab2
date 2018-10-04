@@ -18,9 +18,9 @@ from polynomial_codifiers.PolyDecoder import PolyDecoder
 
 # Script which generates N random bits and simulates a random channel with probabilities ranging from 0.5 to 10e-6.
 # It then plots a graph comparing different encoding processes.
-N = 1000944
+N = 10000
 
-chosen_matrices = [1, 2, 5, 9, 10]
+chosen_matrices = [5]
 
 # Reading matrices
 reader = MatrixReader()
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     # Generating outputs without encoding, with hamming encoding and with our encoding
     normal_outputs = normal_process(codes, channels)
-    hamming_outputs = hamming_process(codes, channels)
+    # hamming_outputs = hamming_process(codes, channels)
     cyclic_outputs = [cyclic_process(i, codes, channels) for i in chosen_matrices]
 
     # Comparing outputs and plotting a graph
@@ -107,11 +107,11 @@ if __name__ == "__main__":
     cyclic_ps = [[] for p in range(len(cyclic_outputs))]
     for c in range(len(channels)):
         normal_ps.append(1 - np.count_nonzero(normal_outputs[c] == codes)/N)
-        hamming_ps.append(1 - np.count_nonzero(hamming_outputs[c] == codes)/N)
+        # hamming_ps.append(1 - np.count_nonzero(hamming_outputs[c] == codes)/N)
         for i in range(len(cyclic_outputs)):
             cyclic_ps[i].append((1 - np.count_nonzero(cyclic_outputs[i][c] == codes)/N))
     normal_ps = np.log(normal_ps) / np.log(10)
-    hamming_ps = np.log(hamming_ps) / np.log(10)
+    # hamming_ps = np.log(hamming_ps) / np.log(10)
     for i in range(len(cyclic_ps)):
         cyclic_ps[i] = np.log(cyclic_ps[i]) / np.log(10)
     ps = np.log(ps) / np.log(10)
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     plt.xlabel("log(p)")
     plt.ylabel("log(Probabilidade de erro de bit)")
     plt1 = plt.plot(ps, normal_ps, label="Não codificado")
-    plt2 = plt.plot(ps, hamming_ps, label="Hamming")
+    # plt2 = plt.plot(ps, hamming_ps, label="Hamming")
     plt_cycl = []
     for i in range(len(cyclic_ps)):
         plt_cycl.append(plt.plot(ps, cyclic_ps[i], label=reader.get_name(chosen_matrices[i])))

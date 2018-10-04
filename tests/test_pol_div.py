@@ -1,5 +1,6 @@
 from polynomial_codifiers.PolyDecoder import PolyDecoder
 from polynomial_codifiers.PolyEncoder import PolyEncoder
+from polynomial_codifiers.PolyOps import poly_divmod
 import numpy as np
 
 
@@ -14,7 +15,12 @@ def test_division():
     print(polymult)
 
     print(PolyDecoder.pol_div(polymult, num))
+    print(list(PolyDecoder.reduce_degree(polymult, PolyDecoder.degree(polymult))))
+    print(list(PolyDecoder.reduce_degree(num, PolyDecoder.degree(num))))
+    q, r = poly_divmod(list(PolyDecoder.reduce_degree(polymult, PolyDecoder.degree(polymult))), list(PolyDecoder.reduce_degree(num, PolyDecoder.degree(num))))
     print(PolyDecoder.pol_div(polymult, den))
+    print("null")
+    print(poly_divmod([], [1, 0, 1]))
 
 
 if __name__ == "__main__":
